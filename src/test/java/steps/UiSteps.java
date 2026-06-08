@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 
 public class UiSteps {
     private WebDriver driver;
-
+    //
     @When("the user navigates to {string}")
     public void navigateToUrl(String url) {
         System.setProperty("webdriver.chrome.silentOutput", "true");
