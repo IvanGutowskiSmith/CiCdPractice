@@ -1,0 +1,37 @@
+name: Java Automation Framework CI
+
+# 1. Trigger the pipeline on pushes or pull requests to your main branch
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  automation-tests:
+    runs-on: ubuntu-latest # Runs on a clean Linux virtual machine
+
+    steps:
+      # Step 1: Clone your code from GitHub into the virtual machine
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # Step 2: Set up Java 17 environment on the machine
+      - name: Set up JDK 17
+        uses: actions/preferred-jdk@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven' # Caches dependencies so your pipeline runs faster next time
+
+      # Step 3: Run the tests exactly like you do locally
+      - name: Run UI and API Tests via Maven
+        run: mvn clean test
+
+      # Step 4: Save your Cucumber HTML reports so you can view them if a test fails
+      - name: Archive Test Execution Reports
+        if: always() # Always run this step, even if the tests fail!
+        uses: actions/upload-artifact@v4
+        with:
+          name: cucumber-html-report
+          path: target/cucumber-reports.html
